@@ -1,0 +1,352 @@
+<Window x:Class="Configurator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        KeyDown="Grid_KeyDown" Title="Configurator v1.3.2" Height="550" Width="900"
+        WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize">
+  <Grid>
+    <TabControl Margin="10,50,10,10">
+      <TabItem Header="Controls">
+        <Grid x:Name="MainControlsGrid">
+          <Popup x:Name="Popup" Panel.ZIndex="-1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="456"
+                 Height="256" Placement="Center" AllowsTransparency="true" Margin="0,72,0,0"
+                 IsOpen="{Binding PopupEnabled, UpdateSourceTrigger=PropertyChanged}">
+            <Border BorderBrush="Black" BorderThickness="1,1,1,1">
+              <Grid Background="#FFDADADA" RenderTransformOrigin="0.5,0.5">
+                <UIElement.RenderTransform>
+                  <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                  </TransformGroup>
+                </UIElement.RenderTransform>
+                <TextBlock x:Name="ButtonDesc" HorizontalAlignment="Center" FontWeight="Bold" Margin="20,80,20,20" Text=""/>
+                <TextBlock x:Name="ButtonText" TextAlignment="Center" FontSize="16" FontWeight="Normal" Margin="10,63,10,77"
+                           Width="434" HorizontalAlignment="Center">
+                  <Run Text="Choose a bind from drop-down list "/>
+                  <LineBreak/>
+                  <Run Text="and press any button on your controller."/>
+                </TextBlock>
+                <TextBlock x:Name="ButtonText2" HorizontalAlignment="Right" FontSize="12" Text="Press ESC to cancel"
+                           Margin="20,15,20,20"/>
+                <ComboBox SelectionChanged="ButtonListPop_SelectionChanged" x:Name="ButtonListPop" FontWeight="Normal"
+                          Margin="20,40,20,20" Width="150" Height="24"
+                          ItemsSource="{Binding ButtonNameList, UpdateSourceTrigger=PropertyChanged}"/>
+              </Grid>
+            </Border>
+          </Popup>
+          <GroupBox Header="Axes" Margin="10,10,415,114" FontWeight="Bold">
+            <Grid x:Name="AxesGrid">
+              <Label Content="Steering" HorizontalAlignment="Left" Margin="0,32,0,0" VerticalAlignment="Top" Width="120"
+                     FontWeight="Normal"/>
+              <Label Content="Combined" HorizontalAlignment="Left" Margin="0,73,0,0" VerticalAlignment="Top" Width="120"
+                     FontWeight="Normal"/>
+              <Label Content="Throttle" HorizontalAlignment="Left" Margin="0,114,0,0" VerticalAlignment="Top"
+                     Width="120" FontWeight="Normal"/>
+              <Label Content="Brake" HorizontalAlignment="Left" Margin="0,155,0,0" VerticalAlignment="Top" Width="120"
+                     FontWeight="Normal"/>
+              <Label Content="Clutch" HorizontalAlignment="Left" Margin="0,196,0,0" VerticalAlignment="Top" Width="120"
+                     FontWeight="Normal"/>
+              <Label Content="Handbrake" HorizontalAlignment="Left" Margin="0,237,0,0" VerticalAlignment="Top"
+                     Width="120" FontWeight="Normal"/>
+              <TextBox TextChanged="Steering_TextChanged" x:Name="Steering" IsTabStop="false" HorizontalAlignment="Left"
+                       Height="23" Margin="77,35,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="85"
+                       IsEnabled="false" FontWeight="Normal"/>
+              <TextBox x:Name="Combined" IsTabStop="false" HorizontalAlignment="Left" Height="23" Margin="77,76,0,0"
+                       TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="85" IsEnabled="false"
+                       FontWeight="Normal"/>
+              <TextBox x:Name="Throttle" IsTabStop="false" HorizontalAlignment="Left" Height="23" Margin="77,117,0,0"
+                       TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="85" IsEnabled="false"
+                       FontWeight="Normal"/>
+              <TextBox x:Name="Brake" IsTabStop="false" HorizontalAlignment="Left" Height="23" Margin="77,158,0,0"
+                       TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="85" IsEnabled="false"
+                       FontWeight="Normal"/>
+              <TextBox x:Name="Clutch" IsTabStop="false" HorizontalAlignment="Left" Height="23" Margin="77,198,0,0"
+                       TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="85" IsEnabled="false"
+                       FontWeight="Normal"/>
+              <TextBox x:Name="Handbrake" IsTabStop="false" HorizontalAlignment="Left" Height="23" Margin="77,239,0,0"
+                       TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="85" IsEnabled="false"
+                       FontWeight="Normal"/>
+              <Label Content="Deadzone" HorizontalAlignment="Left" Margin="167,10,0,0" VerticalAlignment="Top"
+                     Width="63" FontWeight="Normal"/>
+              <Label Content="Invert" HorizontalAlignment="Left" Margin="227,10,0,0" VerticalAlignment="Top" Width="43"
+                     FontWeight="Normal"/>
+              <Button Click="Set_Axis_Click" x:Name="Set_Steering" Content="Set" HorizontalAlignment="Left"
+                      Margin="333,36,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="0"/>
+              <Button Click="Clear_Axis_Click" x:Name="Clear_Steering" Content="Clear" HorizontalAlignment="Left"
+                      Margin="375,36,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="1"/>
+              <Button Click="Set_Axis_Click" x:Name="Set_Combined" Content="Set" HorizontalAlignment="Left"
+                      Margin="333,77,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="2"/>
+              <Button Click="Clear_Axis_Click" x:Name="Clear_Combined" Content="Clear" HorizontalAlignment="Left"
+                      Margin="375,77,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="3"/>
+              <Button Click="Set_Axis_Click" x:Name="Set_Throttle" Content="Set" HorizontalAlignment="Left"
+                      Margin="333,119,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="4"/>
+              <Button Click="Clear_Axis_Click" x:Name="Clear_Throttle" Content="Clear" HorizontalAlignment="Left"
+                      Margin="375,119,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="5"/>
+              <Button Click="Set_Axis_Click" x:Name="Set_Brake" Content="Set" HorizontalAlignment="Left"
+                      Margin="333,160,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="6"/>
+              <Button Click="Clear_Axis_Click" x:Name="Clear_Brake" Content="Clear" HorizontalAlignment="Left"
+                      Margin="375,160,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="7"/>
+              <Button Click="Set_Axis_Click" x:Name="Set_Clutch" Content="Set" HorizontalAlignment="Left"
+                      Margin="333,201,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="8"/>
+              <Button Click="Clear_Axis_Click" x:Name="Clear_Clutch" Content="Clear" HorizontalAlignment="Left"
+                      Margin="375,201,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="9"/>
+              <Button Click="Set_Axis_Click" x:Name="Set_Handbrake" Content="Set" HorizontalAlignment="Left"
+                      Margin="333,242,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="10"/>
+              <Button Click="Clear_Axis_Click" x:Name="Clear_Handbrake" Content="Clear" HorizontalAlignment="Left"
+                      Margin="375,242,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="11"/>
+              <TextBox LostFocus="Deadzone_Changed" x:Name="Deadzone_Steering" IsTabStop="false" IsEnabled="false"
+                       HorizontalAlignment="Left" Height="23" Margin="172,35,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <TextBox LostFocus="Deadzone_Changed" x:Name="Deadzone_Combined" IsTabStop="false" IsEnabled="false"
+                       HorizontalAlignment="Left" Height="23" Margin="172,76,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <TextBox LostFocus="Deadzone_Changed" x:Name="Deadzone_Throttle" IsTabStop="false" IsEnabled="false"
+                       HorizontalAlignment="Left" Height="23" Margin="172,117,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <TextBox LostFocus="Deadzone_Changed" x:Name="Deadzone_Brake" IsTabStop="false" IsEnabled="false"
+                       HorizontalAlignment="Left" Height="23" Margin="172,158,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <TextBox LostFocus="Deadzone_Changed" x:Name="Deadzone_Clutch" IsTabStop="false" IsEnabled="false"
+                       HorizontalAlignment="Left" Height="23" Margin="172,198,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <TextBox LostFocus="Deadzone_Changed" x:Name="Deadzone_Handbrake" IsTabStop="false" IsEnabled="false"
+                       HorizontalAlignment="Left" Height="23" Margin="172,239,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <CheckBox Unchecked="Invert_Unchecked" Checked="Invert_Checked" x:Name="Invert_Steering" IsTabStop="false"
+                        IsEnabled="false" Content="" HorizontalAlignment="Left" Margin="238,38,0,0" VerticalAlignment="Top"
+                        FontWeight="Normal"/>
+              <CheckBox Unchecked="Invert_Unchecked" Checked="Invert_Checked" x:Name="Invert_Combined" IsTabStop="false"
+                        IsEnabled="false" Content="" HorizontalAlignment="Left" Margin="238,80,0,0" VerticalAlignment="Top"
+                        FontWeight="Normal"/>
+              <CheckBox Unchecked="Invert_Unchecked" Checked="Invert_Checked" x:Name="Invert_Throttle" IsTabStop="false"
+                        IsEnabled="false" Content="" HorizontalAlignment="Left" Margin="238,121,0,0"
+                        VerticalAlignment="Top" FontWeight="Normal"/>
+              <CheckBox Unchecked="Invert_Unchecked" Checked="Invert_Checked" x:Name="Invert_Brake" IsTabStop="false"
+                        IsEnabled="false" Content="" HorizontalAlignment="Left" Margin="238,162,0,0"
+                        VerticalAlignment="Top" FontWeight="Normal"/>
+              <CheckBox Unchecked="Invert_Unchecked" Checked="Invert_Checked" x:Name="Invert_Clutch" IsTabStop="false"
+                        IsEnabled="false" Content="" HorizontalAlignment="Left" Margin="238,202,0,0"
+                        VerticalAlignment="Top" FontWeight="Normal"/>
+              <CheckBox Unchecked="Invert_Unchecked" Checked="Invert_Checked" x:Name="Invert_Handbrake" IsTabStop="false"
+                        IsEnabled="false" Content="" HorizontalAlignment="Left" Margin="238,243,0,0"
+                        VerticalAlignment="Top" FontWeight="Normal"/>
+              <Label Content="Gamepad
+    Stick" HorizontalAlignment="Left" Margin="266,10,0,0" VerticalAlignment="Top"
+                     Width="66" FontWeight="Normal"/>
+              <CheckBox Checked="Gamepad_Handbrake_Checked" Unchecked="Gamepad_Handbrake_Unchecked"
+                        x:Name="Gamepad_Handbrake" IsTabStop="false" Content="" HorizontalAlignment="Left"
+                        Margin="289,243,0,0" VerticalAlignment="Top" IsEnabled="false" FontWeight="Normal"/>
+            </Grid>
+          </GroupBox>
+          <GroupBox Header="Buttons" FontWeight="Bold" Margin="458,9,10,10">
+            <Grid x:Name="ButtonTable" Margin="0,46,0,-16">
+              <DataGrid x:Name="ButtonGridView" FontWeight="Normal" Margin="6,3,10,28" BorderBrush="#FFC7C7C7"
+                        ItemsSource="{Binding DataTableValues, UpdateSourceTrigger=PropertyChanged}"/>
+              <Button Click="Set_Button_Click" x:Name="Set_Buttons" Content="Set" HorizontalAlignment="Left"
+                      Margin="289,-37,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="14"/>
+              <Button Click="Clear_Button_Click" x:Name="Clear_Buttons" Content="Clear" HorizontalAlignment="Left"
+                      Margin="331,-37,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="15"/>
+              <TextBlock x:Name="ButtonBindDescription" TextAlignment="Center" HorizontalAlignment="Left" Margin="70,41,0,0"
+                         TextWrapping="Wrap" VerticalAlignment="Top" Height="257" Width="256" FontWeight="Normal">
+                <Run Text="Bind labels are important in Forza: Apex and Forza Horizon 3 for controls, and they ensure correct operation of menu navigation in"/>
+                <LineBreak/>
+                <Run Text="Forza Motorsport 7."/>
+                <LineBreak/>
+                <Run/>
+                <LineBreak/>
+                <Run Text="Forza: Apex and Forza Horizon 3 supports up to 18 buttons and 8 shifter gears, Forza Motorsport 7 supports up to 128 buttons."/>
+                <LineBreak/>
+                <Run/>
+                <LineBreak/>
+                <Run Text="Press 'Set' to bind buttons on your controller."/>
+                <LineBreak/>
+                <Run Text="You can map multiple buttons to the same "/>
+                <LineBreak/>
+                <Run Text="in-game bind. "/>
+                <LineBreak/>
+                <Run/>
+                <LineBreak/>
+                <Run Text="To delete existing binds, select a row (or multiple rows by holding SHIFT on your keyboard) and press 'Clear'."/>
+                <LineBreak/>
+                <Run/>
+                <LineBreak/>
+                <Run Text=""/>
+              </TextBlock>
+            </Grid>
+          </GroupBox>
+          <GroupBox Header="DPad" FontWeight="Bold" Margin="10,319,415,10">
+            <Grid x:Name="ButtonsGrid" Margin="0,0,-2,0">
+              <Label Content="DPad" HorizontalAlignment="Left" FontWeight="Normal" Margin="-2,17,0,0"
+                     VerticalAlignment="Top" Width="120"/>
+              <TextBox x:Name="DPad" IsTabStop="false" HorizontalAlignment="Left" Height="23" FontWeight="Normal"
+                       Margin="47,20,0,0" TextWrapping="Wrap" Text="None" VerticalAlignment="Top" Width="71"
+                       IsEnabled="false"/>
+              <Button Click="Set_DPad_Click" x:Name="Set_DPad" Content="Set" HorizontalAlignment="Left"
+                      Margin="333,21,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="12"/>
+              <Button Click="Clear_DPad_Click" x:Name="Clear_Dpad" Content="Clear" HorizontalAlignment="Left"
+                      Margin="375,21,0,0" VerticalAlignment="Top" Width="37" FontWeight="Normal" TabIndex="13"/>
+            </Grid>
+          </GroupBox>
+        </Grid>
+      </TabItem>
+      <TabItem Header="Force Feedback">
+        <Grid x:Name="FFBMainGrid" IsEnabled="false">
+          <GroupBox Header="Forces" FontWeight="Bold" Margin="10,10,613,10">
+            <Grid x:Name="FFBGrid" Margin="0,0,-2,-12">
+              <Label ToolTip="Sets the scale of forces (0.00 - infinite, 1.00 is default)." Content="Magnitude"
+                     HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top" FontWeight="Normal" Width="82"/>
+              <TextBox LostFocus="ForceFeedback_Check_TextBox" x:Name="Const_Magnitude"
+                       ToolTip="Sets the scale of forces (0.00 - infinite, 1.00 is default)." HorizontalAlignment="Left"
+                       Height="23" Margin="138,10,0,0" TextWrapping="Wrap" Text="1.000" VerticalAlignment="Top" Width="53"
+                       FontWeight="Normal"/>
+              <Label ToolTip="Sets the minimum strength of forces. Increase this to amplify weaker forces (0.00 is default)."
+                     Content="Minimum Force" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="ForceFeedback_Check_TextBox" x:Name="Const_MinimumForce"
+                       ToolTip="Sets the minimum strength of forces. Increase this to amplify weaker forces (0.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,44,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the maximum strength of forces. Decrease this to weaken strongest forces. Used in combination with 
+Magnitude, can increase responsiveness of the wheel while avoiding clipping and oscillation (1.00 is default)."
+                     Content="Maximum Force" Margin="10,76,79,0" VerticalAlignment="Top" FontWeight="Normal"/>
+              <TextBox LostFocus="ForceFeedback_Check_TextBox" x:Name="Const_MaximumForce"
+                       ToolTip="Sets the maximum strength of forces. Decrease this to weaken strongest forces. Used in combination with 
+Magnitude, can increase responsiveness of the wheel while avoiding clipping and oscillation (1.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,79,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the threshold above which forces are filtered dynamically, weakening forces around the center of 
+the steering axis, while keeping the strength of forces that are further away from steering axis center.
+Used in combination with Minimum Coefficient (1.00 is disabled)."
+                     Content="Filter Threshold" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="ForceFeedback_Check_TextBox" x:Name="Const_FilterThreshold"
+                       ToolTip="Sets the threshold above which forces are filtered dynamically, weakening forces around the center of 
+the steering axis, while keeping the strength of forces that are further away from steering axis center.
+Used in combination with Minimum Coefficient (1.00 is disabled)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,114,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the minimum coefficient that is applied to forces around the center of steering axis. Setting this to 0 will 
+cause all forces above Filter Threshold to be filtered. Useful for drift setups (1.00 is disabled)."
+                     Content="Minimum Coefficient" HorizontalAlignment="Left" Margin="10,146,0,0"
+                     VerticalAlignment="Top" FontWeight="Normal" Width="128"/>
+              <TextBox LostFocus="ForceFeedback_Check_TextBox" x:Name="Const_MinimumCoefficient"
+                       ToolTip="Sets the minimum coefficient that is applied to forces around the center of steering axis. Setting this to 0 will 
+cause all forces above Filter Threshold to be filtered. Useful for drift setups (1.00 is disabled)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,149,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+            </Grid>
+          </GroupBox>
+          <GroupBox Header="Vibrations" FontWeight="Bold" Margin="274,10,270,10">
+            <Grid x:Name="VibrationsGrid">
+              <Label ToolTip="Sets the scale of vibration (0.00 - infinite, 1.00 is default)." Content="Magnitude"
+                     HorizontalAlignment="Left" Margin="10,3,0,0" VerticalAlignment="Top" FontWeight="Normal" Width="82"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_Sine_Magnitude"
+                       ToolTip="Sets the scale of vibration (0.00 - infinite, 1.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="208,6,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the minimum force of vibrations. Increase this to amplify weaker vibrations (0.00 is default)."
+                     Content="Minimum Force" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_Sine_MinimumForce"
+                       ToolTip="Sets the minimum force of vibrations. Increase this to amplify weaker vibrations (0.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="208,41,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the maximum force of vibrations. Decrease this to weaken stronger vibrations (1.00 is default)."
+                     Content="Maximum Force" HorizontalAlignment="Left" Margin="10,73,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_Sine_MaximumForce"
+                       ToolTip="Sets the maximum force of vibrations. Decrease this to weaken stronger vibrations (1.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="208,76,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the frequency of sine wave vibrations (0.00 - infinite, 1.00 is default)."
+                     Content="Frequency" HorizontalAlignment="Left" Margin="10,109,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_Sine_Frequency"
+                       ToolTip="Sets the frequency of sine wave vibrations (0.00 - infinite, 1.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="208,112,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Change this value if your wheel pulls to left or right. Experiment with values to achieve perfectly 
+balanced wheel (0 - 1.0, default is 0.375)."
+                     Content="Phase" HorizontalAlignment="Left" Margin="10,145,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_Sine_Phase"
+                       ToolTip="Change this value if your wheel pulls to left or right. Experiment with values to achieve perfectly 
+balanced wheel (0 - 1.0, default is 0.375)."
+                       HorizontalAlignment="Left" Height="23" Margin="208,148,0,0" TextWrapping="Wrap" Text="0.375"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the strength of engine vibrations (0.00 - 1.00). This only works if you have vibration scale set to 100 ingame."
+                     Content="Engine Vibrations" HorizontalAlignment="Left" Margin="10,181,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_Engine_Magnitude"
+                       ToolTip="Sets the strength of engine vibrations (0.00 - 1.00). This only works if you have vibration scale set to 100 ingame."
+                       HorizontalAlignment="Left" Height="23" Margin="208,184,0,0" TextWrapping="Wrap" Text="0.030"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the frequency of engine vibrations (0.00 - infinite, 1.00 is default)."
+                     Content="Engine Vibration Frequency" HorizontalAlignment="Left" Margin="10,218,0,0"
+                     VerticalAlignment="Top" FontWeight="Normal" Width="159" RenderTransformOrigin="0.5,0.5"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_Engine_Frequency"
+                       ToolTip="Sets the frequency of engine vibrations (0.00 - infinite, 1.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="208,221,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the strength of gearshift vibration (0.00 - 1.00). This only works if you have vibration scale set to 100 ingame."
+                     Content="Gearshift Vibration" HorizontalAlignment="Left" Margin="10,254,0,0"
+                     VerticalAlignment="Top" FontWeight="Normal" Width="134"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_GearShift_Magnitude"
+                       ToolTip="Sets the strength of gearshift vibration (0.00 - 1.00). This only works if you have vibration scale set to 100 ingame."
+                       HorizontalAlignment="Left" Height="23" Margin="208,257,0,0" TextWrapping="Wrap" Text="0.100"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the frequency of gearshift vibration (0.00 - infinite, 1.00 is default)."
+                     Content="Gearshift Vibration Frequency" HorizontalAlignment="Left" Margin="10,290,0,0"
+                     VerticalAlignment="Top" FontWeight="Normal" Width="173" RenderTransformOrigin="0.5,0.5"/>
+              <TextBox LostFocus="Sine_Check_TextBox" x:Name="Sine_GearShift_Frequency"
+                       ToolTip="Sets the frequency of gearshift vibration (0.00 - infinite, 1.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="208,293,0,0" TextWrapping="Wrap" Text="1.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+            </Grid>
+          </GroupBox>
+          <GroupBox Header="Conditions" FontWeight="Bold" Margin="620,10,10,10">
+            <Grid x:Name="ConditionGrid" Margin="0,0,-2,-12">
+              <Label ToolTip="Sets the multiplier of the scale of spring effect (0.00 - infinite, 0.00 is default)."
+                     Content="Spring Coefficient" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="103"/>
+              <TextBox LostFocus="Condition_Check_TextBox" x:Name="Spring_Coefficient"
+                       ToolTip="Sets the multiplier of the scale of spring effect (0.00 - infinite, 0.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,10,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the maximum strength of spring effect (0.00 - 1.00, 0.00 is default)."
+                     Content="Spring Saturation" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="123"/>
+              <TextBox LostFocus="Condition_Check_TextBox" x:Name="Spring_Saturation"
+                       ToolTip="Sets the maximum strength of spring effect (0.00 - 1.00, 0.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,44,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the multiplier of the scale of damper effect (0.00 - infinite, 0.00 is default)."
+                     Content="Damper Coefficient" Margin="10,76,79,0" VerticalAlignment="Top" FontWeight="Normal"/>
+              <TextBox LostFocus="Condition_Check_TextBox" x:Name="Damper_Coefficient"
+                       ToolTip="Sets the multiplier of the scale of spring effect (0.00 - infinite, 0.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,79,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+              <Label ToolTip="Sets the maximum strength of damper effect (0.00 - 1.00, 0.00 is default)."
+                     Content="Damper Saturation" HorizontalAlignment="Left" Margin="10,111,0,0" VerticalAlignment="Top"
+                     FontWeight="Normal" Width="123"/>
+              <TextBox LostFocus="Condition_Check_TextBox" x:Name="Damper_Saturation"
+                       ToolTip="Sets the maximum strength of damper effect (0.00 - 1.00, 0.00 is default)."
+                       HorizontalAlignment="Left" Height="23" Margin="138,114,0,0" TextWrapping="Wrap" Text="0.000"
+                       VerticalAlignment="Top" Width="53" FontWeight="Normal"/>
+            </Grid>
+          </GroupBox>
+          <TextBlock x:Name="FFBMessage" HorizontalAlignment="Left" Margin="288,-22,0,0" TextWrapping="Wrap"
+                     Text="Steering axis not bound. Force Feedback tab is disabled." VerticalAlignment="Top" Width="508"
+                     Grid.ColumnSpan="2"/>
+        </Grid>
+      </TabItem>
+    </TabControl>
+    <Button Click="Save_Config_Click" Content="Save config" HorizontalAlignment="Left" VerticalAlignment="Top"
+            Width="75" Margin="719,37,0,0"/>
+    <Button Click="Load_Config_Click" Content="Load config" HorizontalAlignment="Left" VerticalAlignment="Top"
+            Width="75" Margin="799,37,0,0"/>
+  </Grid>
+</Window>
