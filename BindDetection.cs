@@ -53,43 +53,44 @@ internal class BindDetection
 
     public static DataRow GetButton(ButtonData.ButtonEnum bindButton)
     {
+        FlushControllerBuffers();
         while (true)
         {
-            foreach (Joystick gameController in BindDetection.GameControllers)
+            foreach (var joy in BindDetection.GameControllers)
             {
-                Joystick joy = gameController;
-                JoystickUpdate[] bufferedData = joy.GetBufferedData();
-                if (bufferedData.Length == 1)
+                foreach (var update in joy.GetBufferedData())
                 {
-                    JoystickOffset offset = bufferedData[0].Offset;
-                    if (offset.ToString().IndexOf("Button") != -1 && bufferedData[0].Value != 0)
+                    JoystickOffset offset = update.Offset;
+                    var controlName = offset.ToString();
+                    if (update.Value == 0 || !controlName.StartsWith("Button"))
                     {
-                        int index = BindDetection.InputCollection.FindIndex(
-                            (Predicate<Controller>)(x => x.InstanceGuid == joy.Information.InstanceGuid));
-                        if (BindDetection.InputCollection[index].Buttons == null)
-                            BindDetection.InputCollection[index].Buttons = new List<ButtonData>();
-                        offset = bufferedData[0].Offset;
-                        int buttonIndex = Convert.ToInt32(offset.ToString().Substring(7));
-                        DataRow row = BindDetection.ButtonsData.NewRow();
-                        row[0] = (object)bindButton.ToString();
-                        row[1] = (object)joy.Information.InstanceName;
-                        row[2] = (object)buttonIndex;
-                        row[3] = (object)joy.Information.InstanceGuid;
-                        DataRow button = BindDetection.ButtonsData.AsEnumerable()
-                            .Where<DataRow>((System.Func<DataRow, bool>)(x =>
-                                Guid.Parse(x.ItemArray[3].ToString()) == joy.Information.InstanceGuid &&
-                                (int)x.ItemArray[2] == buttonIndex)).FirstOrDefault<DataRow>();
-                        if (button != null)
-                            return button;
-                        ButtonData buttonData = new ButtonData()
-                        {
-                            Id = bindButton,
-                            Index = buttonIndex
-                        };
-                        BindDetection.InputCollection[index].Buttons.Add(buttonData);
-                        BindDetection.ButtonsData.Rows.Add(row);
-                        return (DataRow)null;
+                        continue;
                     }
+
+                    var controller = InputCollection.Find(
+                        (Predicate<Controller>)(x => x.InstanceGuid == joy.Information.InstanceGuid));
+                    controller.Buttons ??= new List<ButtonData>();
+                    
+                    int buttonIndex = Convert.ToInt32(controlName.Substring(7));
+                    DataRow row = BindDetection.ButtonsData.NewRow();
+                    row[0] = (object)bindButton.ToString();
+                    row[1] = (object)joy.Information.InstanceName;
+                    row[2] = (object)buttonIndex;
+                    row[3] = (object)joy.Information.InstanceGuid;
+                    DataRow button = BindDetection.ButtonsData.AsEnumerable()
+                        .Where<DataRow>((System.Func<DataRow, bool>)(x =>
+                            Guid.Parse(x.ItemArray[3].ToString()) == joy.Information.InstanceGuid &&
+                            (int)x.ItemArray[2] == buttonIndex)).FirstOrDefault<DataRow>();
+                    if (button != null)
+                        return button;
+                    ButtonData buttonData = new ButtonData()
+                    {
+                        Id = bindButton,
+                        Index = buttonIndex
+                    };
+                    controller.Buttons.Add(buttonData);
+                    ButtonsData.Rows.Add(row);
+                    return (DataRow)null;
                 }
             }
 
@@ -97,19 +98,24 @@ internal class BindDetection
         }
     }
 
-    public static AxisData GetAxis(string axisId, out int matchingControllerIndex)
+    private static void FlushControllerBuffers()
     {
-        // Flush buffers, so we don't bind to stuff that's moved since the last binding
         foreach (var gameController in BindDetection.GameControllers)
         {
             gameController.GetBufferedData();
         }
-        
+    }
+
+    public static AxisData GetAxis(string axisId, out int matchingControllerIndex)
+    {
+        // Flush buffers, so we don't bind to stuff that's moved since the last binding
+        FlushControllerBuffers();
+
         // Keyed by (controllerIndex, axisIndex)
         // Values are (initialValue, range)
         var firstValues = new Dictionary<(int, int), (int, int)>();
         matchingControllerIndex = -1;
-        
+
         while (true)
         {
             foreach (var gameController in GameControllers)
@@ -128,7 +134,7 @@ internal class BindDetection
                     {
                         continue;
                     }
-                    
+
                     var axisData = new AxisData()
                     {
                         AxisIndex = AxesNames.IndexOf(controlName),
@@ -155,7 +161,7 @@ internal class BindDetection
                     }
 
                     var controller = InputCollection[controllerIndex];
-                    
+
                     if (controller.Axes == null)
                         controller.Axes = new List<AxisData>();
                     if (controller.Axes.FindIndex(
