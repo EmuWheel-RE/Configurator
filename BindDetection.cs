@@ -99,6 +99,11 @@ internal class BindDetection
 
     public static AxisData GetAxis(string axisId, out int matchingControllerIndex)
     {
+        // Flush buffers, so we don't bind to stuff that's moved since the last binding
+        foreach (var gameController in BindDetection.GameControllers)
+        {
+            gameController.GetBufferedData();
+        }
         matchingControllerIndex = -1;
         while (true)
         {
