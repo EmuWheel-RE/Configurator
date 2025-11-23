@@ -104,10 +104,15 @@ internal class BindDetection
         {
             gameController.GetBufferedData();
         }
+        
+        // Keyed by (controllerIndex, axisIndex)
+        // Values are (initialValue, range)
+        var firstValues = new Dictionary<(int, int), (int, int)>();
         matchingControllerIndex = -1;
+        
         while (true)
         {
-            foreach (Joystick gameController in GameControllers)
+            foreach (var gameController in GameControllers)
             {
                 Joystick joy = gameController;
                 foreach (var update in joy.GetBufferedData())
@@ -123,17 +128,36 @@ internal class BindDetection
                     {
                         continue;
                     }
-
-                    int controllerIndex = BindDetection.InputCollection.FindIndex(
-                        (Predicate<Controller>)(x => x.InstanceGuid == joy.Information.InstanceGuid));
-                    var controller = InputCollection[controllerIndex];
-                    if (controller.Axes == null)
-                        controller.Axes = new List<AxisData>();
-                    AxisData axisData = new AxisData()
+                    
+                    var axisData = new AxisData()
                     {
                         AxisIndex = AxesNames.IndexOf(controlName),
                         Id = axisId
                     };
+
+                    int controllerIndex = BindDetection.InputCollection.FindIndex(
+                        (Predicate<Controller>)(x => x.InstanceGuid == joy.Information.InstanceGuid));
+                    var stateKey = (controllerIndex, axisData.AxisIndex);
+                    if (!firstValues.ContainsKey(stateKey))
+                    {
+                        var range = joy.GetObjectPropertiesByName(controlName).LogicalRange;
+                        firstValues.Add(stateKey, (update.Value, range.Maximum - range.Minimum));
+                        continue;
+                    }
+                    else
+                    {
+                        var (firstValue, range) = firstValues[stateKey];
+                        // Require a 5% change, so that we can reliably bind with noisy/high-sensitivity inputs
+                        if (Math.Abs(update.Value - firstValue) < (range / 20))
+                        {
+                            continue;
+                        }
+                    }
+
+                    var controller = InputCollection[controllerIndex];
+                    
+                    if (controller.Axes == null)
+                        controller.Axes = new List<AxisData>();
                     if (controller.Axes.FindIndex(
                             (Predicate<AxisData>)(x =>
                                 x.Id == axisData.Id && x.AxisIndex == axisData.AxisIndex)) != -1)
