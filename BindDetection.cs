@@ -25,8 +25,9 @@ internal class BindDetection
 
   public static DataTable ButtonsData { get; set; }
 
-  public static DPad GetDPad(out int ctrindex)
+  public static DPad GetDPad(out int controllerIndex)
   {
+    controllerIndex = -1;
     while (true)
     {
       foreach (Joystick gameController in BindDetection.GameControllers)
@@ -40,7 +41,7 @@ internal class BindDetection
             BindDetection.InputCollection[index].DPad = new DPad();
           DPad dpad = new DPad() { Index = index };
           BindDetection.InputCollection[index].DPad = dpad;
-          ctrindex = index;
+          controllerIndex = index;
           return dpad;
         }
       }
@@ -89,8 +90,9 @@ internal class BindDetection
     }
   }
 
-  public static AxisData GetAxis(string axisId, out int ctrindex)
+  public static AxisData GetAxis(string axisId, out int controllerIndex)
   {
+    controllerIndex = -1;
     while (true)
     {
       foreach (Joystick gameController in BindDetection.GameControllers)
@@ -118,7 +120,7 @@ internal class BindDetection
               {
                 int index3 = BindDetection.InputCollection[index1].Axes.FindIndex((Predicate<AxisData>) (x => x.Id == ax.Id));
                 BindDetection.InputCollection[index1].Axes[index3] = ax;
-                ctrindex = index1;
+                controllerIndex = index1;
                 return ax;
               }
               if (BindDetection.InputCollection[index1].Axes.FindIndex((Predicate<AxisData>) (x => x.AxisIndex == ax.AxisIndex)) != -1)
@@ -135,11 +137,11 @@ internal class BindDetection
                 strArray[5] = str;
                 strArray[6] = "'. Clear the binding and try again.";
                 int num = (int) MessageBox.Show(string.Concat(strArray), "Duplicate binding", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
-                ctrindex = index1;
+                controllerIndex = index1;
                 return (AxisData) null;
               }
               BindDetection.InputCollection[index1].Axes.Add(ax);
-              ctrindex = index1;
+              controllerIndex = index1;
               return ax;
             }
           }
