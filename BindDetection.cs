@@ -121,40 +121,41 @@ internal class BindDetection
 
                     int controllerIndex = BindDetection.InputCollection.FindIndex(
                         (Predicate<Controller>)(x => x.InstanceGuid == joy.Information.InstanceGuid));
-                    if (InputCollection[controllerIndex].Axes == null)
-                        InputCollection[controllerIndex].Axes = new List<AxisData>();
+                    var controller = InputCollection[controllerIndex];
+                    if (controller.Axes == null)
+                        controller.Axes = new List<AxisData>();
                     AxisData axisData = new AxisData()
                     {
                         AxisIndex = AxesNames.IndexOf(controlName),
                         Id = axisId
                     };
-                    if (InputCollection[controllerIndex].Axes.FindIndex(
+                    if (controller.Axes.FindIndex(
                             (Predicate<AxisData>)(x =>
                                 x.Id == axisData.Id && x.AxisIndex == axisData.AxisIndex)) != -1)
                     {
-                        int axisIndex = InputCollection[controllerIndex].Axes
+                        int axisIndex = controller.Axes
                             .FindIndex((Predicate<AxisData>)(x => x.Id == axisData.Id));
-                        InputCollection[controllerIndex].Axes[axisIndex] = axisData;
+                        controller.Axes[axisIndex] = axisData;
                         matchingControllerIndex = controllerIndex;
                         return axisData;
                     }
 
-                    if (InputCollection[controllerIndex].Axes
+                    if (controller.Axes
                             .FindIndex((Predicate<AxisData>)(x => x.AxisIndex == axisData.AxisIndex)) != -1)
                     {
-                        int currentBindingIndex = InputCollection[controllerIndex].Axes
+                        int currentBindingIndex = controller.Axes
                             .FindIndex((Predicate<AxisData>)(x => x.AxisIndex == axisData.AxisIndex));
-                        string currentBindingName = InputCollection[controllerIndex].Axes[currentBindingIndex]
+                        string currentBindingName = controller.Axes[currentBindingIndex]
                             .Id.ToString();
                         MessageBox.Show(
-                            $"The axis '{offset.ToString()}' on controller '{InputCollection[controllerIndex].InstanceName}' is already bound to '{currentBindingName}'. Clear the binding and try again.",
+                            $"The axis '{offset.ToString()}' on controller '{controller.InstanceName}' is already bound to '{currentBindingName}'. Clear the binding and try again.",
                             "Duplicate binding", MessageBoxButton.OK, MessageBoxImage.Exclamation,
                             MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
                         matchingControllerIndex = controllerIndex;
                         return (AxisData)null;
                     }
 
-                    InputCollection[controllerIndex].Axes.Add(axisData);
+                    controller.Axes.Add(axisData);
                     matchingControllerIndex = controllerIndex;
                     return axisData;
                 }
