@@ -5,3 +5,4 @@ bin/
 *.dll
 *.pdb
 *.exe
+*.user
