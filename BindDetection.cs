@@ -105,13 +105,11 @@ internal class BindDetection
             foreach (Joystick gameController in GameControllers)
             {
                 Joystick joy = gameController;
-                JoystickUpdate[] joystickData = joy.GetBufferedData();
-                if (joystickData.Length == 1)
+                foreach (var update in joy.GetBufferedData())
                 {
-                    JoystickOffset offset = joystickData[0].Offset;
+                    JoystickOffset offset = update.Offset;
                     if (offset.ToString().IndexOf("Button") == -1)
                     {
-                        offset = joystickData[0].Offset;
                         if (offset.ToString().IndexOf("PointOfView") == -1)
                         {
                             int controllerIndex = BindDetection.InputCollection.FindIndex(
@@ -120,7 +118,7 @@ internal class BindDetection
                                 InputCollection[controllerIndex].Axes = new List<AxisData>();
                             AxisData axisData = new AxisData()
                             {
-                                AxisIndex = AxesNames.IndexOf(joystickData[0].Offset.ToString()),
+                                AxisIndex = AxesNames.IndexOf(update.Offset.ToString()),
                                 Id = axisId
                             };
                             if (InputCollection[controllerIndex].Axes.FindIndex(
