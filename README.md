@@ -8,6 +8,7 @@ This repository contains the decompiled source code of the Configurator, with ad
 
 - Download [Forza EmuWheel](https://forzatools.weebly.com/forza-emuwheel.html)
 - Replace `Configurator.exe` with the version from [the latest release](https://github.com/EmuWheel-RE/Configurator/releases/latest)
+- Follow [the EmuWheel Setup Guide](https://forzatools.weebly.com/forza-emuwheel-setup-guide.html)
 
 ## LICENSE
 
