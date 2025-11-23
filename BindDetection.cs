@@ -27,8 +27,7 @@ internal class BindDetection
 
   public static DPad GetDPad(out int ctrindex)
   {
-    bool flag = true;
-    while (flag)
+    while (true)
     {
       foreach (Joystick gameController in BindDetection.GameControllers)
       {
@@ -42,20 +41,16 @@ internal class BindDetection
           DPad dpad = new DPad() { Index = index };
           BindDetection.InputCollection[index].DPad = dpad;
           ctrindex = index;
-          flag = false;
           return dpad;
         }
       }
       Thread.Sleep(1);
     }
-    ctrindex = -1;
-    return (DPad) null;
   }
 
   public static DataRow GetButton(ButtonData.ButtonEnum bindButton)
   {
-    bool flag = true;
-    while (flag)
+    while (true)
     {
       foreach (Joystick gameController in BindDetection.GameControllers)
       {
@@ -92,13 +87,11 @@ internal class BindDetection
       }
       Thread.Sleep(1);
     }
-    return (DataRow) null;
   }
 
   public static AxisData GetAxis(string axisId, out int ctrindex)
   {
-    bool flag = true;
-    while (flag)
+    while (true)
     {
       foreach (Joystick gameController in BindDetection.GameControllers)
       {
@@ -125,7 +118,6 @@ internal class BindDetection
               {
                 int index3 = BindDetection.InputCollection[index1].Axes.FindIndex((Predicate<AxisData>) (x => x.Id == ax.Id));
                 BindDetection.InputCollection[index1].Axes[index3] = ax;
-                flag = false;
                 ctrindex = index1;
                 return ax;
               }
@@ -143,12 +135,10 @@ internal class BindDetection
                 strArray[5] = str;
                 strArray[6] = "'. Clear the binding and try again.";
                 int num = (int) MessageBox.Show(string.Concat(strArray), "Duplicate binding", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
-                flag = false;
                 ctrindex = index1;
                 return (AxisData) null;
               }
               BindDetection.InputCollection[index1].Axes.Add(ax);
-              flag = false;
               ctrindex = index1;
               return ax;
             }
@@ -157,7 +147,5 @@ internal class BindDetection
       }
       Thread.Sleep(1);
     }
-    ctrindex = -1;
-    return (AxisData) null;
   }
 }
