@@ -90,59 +90,49 @@ internal class BindDetection
     }
   }
 
-  public static AxisData GetAxis(string axisId, out int controllerIndex)
+  public static AxisData GetAxis(string axisId, out int matchingControllerIndex)
   {
-    controllerIndex = -1;
+    matchingControllerIndex = -1;
     while (true)
     {
-      foreach (Joystick gameController in BindDetection.GameControllers)
+      foreach (Joystick gameController in GameControllers)
       {
         Joystick joy = gameController;
-        JoystickUpdate[] data = joy.GetBufferedData();
-        if (data.Length == 1)
+        JoystickUpdate[] joystickData = joy.GetBufferedData();
+        if (joystickData.Length == 1)
         {
-          JoystickOffset offset = data[0].Offset;
+          JoystickOffset offset = joystickData[0].Offset;
           if (offset.ToString().IndexOf("Button") == -1)
           {
-            offset = data[0].Offset;
+            offset = joystickData[0].Offset;
             if (offset.ToString().IndexOf("PointOfView") == -1)
             {
-              int index1 = BindDetection.InputCollection.FindIndex((Predicate<Controller>) (x => x.InstanceGuid == joy.Information.InstanceGuid));
-              if (BindDetection.InputCollection[index1].Axes == null)
-                BindDetection.InputCollection[index1].Axes = new List<AxisData>();
-              int index2 = BindDetection.AxesNames.FindIndex((Predicate<string>) (x => x.ToString() == data[0].Offset.ToString()));
-              AxisData ax = new AxisData()
+              int controllerIndex = BindDetection.InputCollection.FindIndex((Predicate<Controller>) (x => x.InstanceGuid == joy.Information.InstanceGuid));
+              if (InputCollection[controllerIndex].Axes == null)
+                InputCollection[controllerIndex].Axes = new List<AxisData>();
+              AxisData axisData = new AxisData()
               {
-                AxisIndex = index2,
+                AxisIndex = AxesNames.IndexOf(joystickData[0].Offset.ToString()),
                 Id = axisId
               };
-              if (BindDetection.InputCollection[index1].Axes.FindIndex((Predicate<AxisData>) (x => x.Id == ax.Id && x.AxisIndex == ax.AxisIndex)) != -1)
+              if (InputCollection[controllerIndex].Axes.FindIndex((Predicate<AxisData>) (x => x.Id == axisData.Id && x.AxisIndex == axisData.AxisIndex)) != -1)
               {
-                int index3 = BindDetection.InputCollection[index1].Axes.FindIndex((Predicate<AxisData>) (x => x.Id == ax.Id));
-                BindDetection.InputCollection[index1].Axes[index3] = ax;
-                controllerIndex = index1;
-                return ax;
+                int axisIndex = InputCollection[controllerIndex].Axes.FindIndex((Predicate<AxisData>) (x => x.Id == axisData.Id));
+                InputCollection[controllerIndex].Axes[axisIndex] = axisData;
+                matchingControllerIndex = controllerIndex;
+                return axisData;
               }
-              if (BindDetection.InputCollection[index1].Axes.FindIndex((Predicate<AxisData>) (x => x.AxisIndex == ax.AxisIndex)) != -1)
+              if (InputCollection[controllerIndex].Axes.FindIndex((Predicate<AxisData>) (x => x.AxisIndex == axisData.AxisIndex)) != -1)
               {
-                int index4 = BindDetection.InputCollection[index1].Axes.FindIndex((Predicate<AxisData>) (x => x.AxisIndex == ax.AxisIndex));
-                string str = BindDetection.InputCollection[index1].Axes[index4].Id.ToString();
-                string[] strArray = new string[7];
-                strArray[0] = "The axis '";
-                offset = data[0].Offset;
-                strArray[1] = offset.ToString();
-                strArray[2] = "' on controller '";
-                strArray[3] = BindDetection.InputCollection[index1].InstanceName;
-                strArray[4] = "' is already bound to '";
-                strArray[5] = str;
-                strArray[6] = "'. Clear the binding and try again.";
-                int num = (int) MessageBox.Show(string.Concat(strArray), "Duplicate binding", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
-                controllerIndex = index1;
+                int currentBindingIndex = InputCollection[controllerIndex].Axes.FindIndex((Predicate<AxisData>) (x => x.AxisIndex == axisData.AxisIndex));
+                string currentBindingName = InputCollection[controllerIndex].Axes[currentBindingIndex].Id.ToString();
+                MessageBox.Show($"The axis '{offset.ToString()}' on controller '{InputCollection[controllerIndex].InstanceName}' is already bound to '{currentBindingName}'. Clear the binding and try again.", "Duplicate binding", MessageBoxButton.OK, MessageBoxImage.Exclamation, MessageBoxResult.OK, MessageBoxOptions.ServiceNotification);
+                matchingControllerIndex = controllerIndex;
                 return (AxisData) null;
               }
-              BindDetection.InputCollection[index1].Axes.Add(ax);
-              controllerIndex = index1;
-              return ax;
+              InputCollection[controllerIndex].Axes.Add(axisData);
+              matchingControllerIndex = controllerIndex;
+              return axisData;
             }
           }
         }
