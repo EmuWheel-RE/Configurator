@@ -4,6 +4,11 @@ EmuWheel-RE contains decompiled (reverse-engineered) versions of [Forza EmuWheel
 
 This repository contains the decompiled source code of the Configurator, with additional bugfixes and improvements.
 
+## How to use
+
+- Download [Forza EmuWheel](https://forzatools.weebly.com/forza-emuwheel.html)
+- Replace `Configurator.exe` with the version from [the latest release](https://github.com/EmuWheel-RE/Configurator/releases/latest)
+
 ## LICENSE
 
 See the [LICENSE](LICENSE) file.
