@@ -787,14 +787,7 @@ public partial class MainWindow : Window, IComponentConnector
             }
 
             var inputCollection = BindDetection.InputCollection;
-            for (var i = 0; i < inputCollection.Count;++i) {
-                var controller = inputCollection[i];
-                if (controller.Axes == null && controller.Buttons == null && controller.DPad == null)
-                {
-                    // Undo the i++ for future iterations
-                    inputCollection.RemoveAt(i--);
-                }
-            }
+            inputCollection.RemoveAll(it => it.Axes == null && it.Buttons == null && it.DPad == null);
             
             JsonSerializer jsonSerializer = new JsonSerializer();
             using (StreamWriter streamWriter = new StreamWriter("configuration.json"))
