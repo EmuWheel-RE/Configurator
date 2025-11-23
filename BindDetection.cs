@@ -27,15 +27,19 @@ internal class BindDetection
 
     public static DPad GetDPad(out int controllerIndex)
     {
+        FlushControllerBuffers();
         controllerIndex = -1;
         while (true)
         {
-            foreach (Joystick gameController in BindDetection.GameControllers)
+            foreach (var joy in BindDetection.GameControllers)
             {
-                Joystick joy = gameController;
-                JoystickUpdate[] bufferedData = joy.GetBufferedData();
-                if (bufferedData.Length == 1 && bufferedData[0].Offset.ToString().IndexOf("PointOfView") != -1)
+                foreach (var update in joy.GetBufferedData())
                 {
+                    if (!update.Offset.ToString().Contains("PointOfView"))
+                    {
+                        continue;
+                    }
+                    
                     int index = BindDetection.InputCollection.FindIndex(
                         (Predicate<Controller>)(x => x.InstanceGuid == joy.Information.InstanceGuid));
                     if (BindDetection.InputCollection[index].DPad == null)
