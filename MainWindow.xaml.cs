@@ -766,48 +766,50 @@ public partial class MainWindow : Window, IComponentConnector
     {
         try
         {
-            bool flag = true;
+            bool nothingBound = true;
             foreach (Controller input in BindDetection.InputCollection)
             {
                 if (input.Axes != null || input.Buttons != null || input.DPad != null)
-                    flag = false;
+                    nothingBound = false;
             }
 
-            if (flag)
+            if (nothingBound)
             {
-                int num1 = (int)MessageBox.Show(
+                MessageBox.Show(
                     "At least one controller needs to be bound for creating configuration file.");
+                return;
             }
-            else if (this.Steering.Text == "None")
-            {
-                int num2 = (int)MessageBox.Show("Steering axis must be bound to save configuration");
-            }
-            else
-            {
-                List<Controller> inputCollection = BindDetection.InputCollection;
-                List<int> intList = new List<int>();
-                int num3 = 0;
-                foreach (Controller controller in inputCollection)
-                {
-                    if (controller.Axes == null && controller.Buttons == null && controller.DPad == null)
-                        intList.Add(num3);
-                    ++num3;
-                }
 
-                foreach (int index in intList)
-                    inputCollection.RemoveAt(index);
-                JsonSerializer jsonSerializer = new JsonSerializer();
-                using (StreamWriter streamWriter = new StreamWriter("configuration.json"))
-                {
-                    using (JsonWriter jsonWriter = (JsonWriter)new JsonTextWriter((TextWriter)streamWriter))
-                    {
-                        jsonWriter.Formatting = Formatting.Indented;
-                        jsonSerializer.Serialize(jsonWriter, (object)inputCollection);
-                    }
-                }
-
-                int num4 = (int)MessageBox.Show("Configuration saved!");
+            if (this.Steering.Text == "None")
+            {
+                MessageBox.Show("Steering axis must be bound to save configuration");
+                return;
             }
+
+            var inputCollection = BindDetection.InputCollection;
+            var unusedControllerIndices = new List<int>();
+            var controllerIndex = 0;
+            foreach (Controller controller in inputCollection)
+            {
+                if (controller.Axes == null && controller.Buttons == null && controller.DPad == null)
+                    unusedControllerIndices.Add(controllerIndex);
+                ++controllerIndex;
+            }
+
+            foreach (int index in unusedControllerIndices)
+                inputCollection.RemoveAt(index);
+            
+            JsonSerializer jsonSerializer = new JsonSerializer();
+            using (StreamWriter streamWriter = new StreamWriter("configuration.json"))
+            {
+                using (JsonWriter jsonWriter = (JsonWriter)new JsonTextWriter((TextWriter)streamWriter))
+                {
+                    jsonWriter.Formatting = Formatting.Indented;
+                    jsonSerializer.Serialize(jsonWriter, (object)inputCollection);
+                }
+            }
+
+            MessageBox.Show("Configuration saved!");
         }
         catch (Exception ex)
         {
